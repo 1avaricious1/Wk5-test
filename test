@@ -1,0 +1,68 @@
+from datetime import datetime
+
+def get_date_range():
+    while True:
+        try:
+            from_date = input("Enter the from date (mm/dd/yyyy): ")
+            to_date = input("Enter the to date (mm/dd/yyyy): ")
+            datetime.strptime(from_date, "%m/%d/%Y")
+            datetime.strptime(to_date, "%m/%d/%Y")
+            return from_date, to_date
+        except ValueError:
+            print("Invalid date format. Please enter the date in mm/dd/yyyy format.")
+
+def get_employee_details():
+    name = input("Enter employee name: ")
+    total_hours = float(input("Enter total hours worked: "))
+    hourly_rate = float(input("Enter hourly rate: "))
+    tax_rate = float(input("Enter income tax rate (as a decimal): "))
+    return name, total_hours, hourly_rate, tax_rate
+
+def calculate_pay(total_hours, hourly_rate, tax_rate):
+    gross_pay = total_hours * hourly_rate
+    income_tax = gross_pay * tax_rate
+    net_pay = gross_pay - income_tax
+    return gross_pay, income_tax, net_pay
+
+def display_employee_info(employee_list):
+    print("\nEmployee Payroll Information")
+    print("="*50)
+    for emp in employee_list:
+        from_date, to_date, name, total_hours, hourly_rate, tax_rate, gross_pay, income_tax, net_pay = emp
+        print(f"{name}: {from_date} to {to_date}\nHours: {total_hours}, Rate: ${hourly_rate:.2f}\n" \
+              f"Gross Pay: ${gross_pay:.2f}, Tax Rate: {tax_rate*100:.1f}%\n" \
+              f"Income Tax: ${income_tax:.2f}, Net Pay: ${net_pay:.2f}\n" + "-"*50)
+
+def display_totals(summary):
+    print("\nPayroll Summary Totals")
+    print("="*50)
+    print(f"Total Employees: {summary['num_employees']}\nTotal Hours: {summary['total_hours']}\n" \
+          f"Total Gross Pay: ${summary['total_gross_pay']:.2f}\nTotal Tax: ${summary['total_tax']:.2f}\n" \
+          f"Total Net Pay: ${summary['total_net_pay']:.2f}")
+
+def main():
+    employee_list = []
+    summary = {'num_employees': 0, 'total_hours': 0, 'total_gross_pay': 0, 'total_tax': 0, 'total_net_pay': 0}
+    
+    while True:
+        from_date, to_date = get_date_range()
+        name, total_hours, hourly_rate, tax_rate = get_employee_details()
+        gross_pay, income_tax, net_pay = calculate_pay(total_hours, hourly_rate, tax_rate)
+        
+        employee_list.append([from_date, to_date, name, total_hours, hourly_rate, tax_rate, gross_pay, income_tax, net_pay])
+        
+        summary['num_employees'] += 1
+        summary['total_hours'] += total_hours
+        summary['total_gross_pay'] += gross_pay
+        summary['total_tax'] += income_tax
+        summary['total_net_pay'] += net_pay
+        
+        cont = input("Enter another employee? (yes/no): ").strip().lower()
+        if cont != 'yes':
+            break
+
+    display_employee_info(employee_list)
+    display_totals(summary)
+
+if __name__ == "__main__":
+    main()
