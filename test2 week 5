@@ -1,0 +1,95 @@
+# Initialize variables
+num_employees = 0  # Keep track of the total number of employees
+employees = []  # List to store employee data
+total_summary = {
+    'num_employees': 0,
+    'total_hours': 0.0,
+    'total_gross_pay': 0.0,
+    'total_tax': 0.0,
+    'total_net_pay': 0.0
+}
+
+def get_date_range():
+    """Function to get the from and to dates"""
+    from_date = input("Enter the start date (mm/dd/yyyy): ")
+    to_date = input("Enter the end date (mm/dd/yyyy): ")
+    return from_date, to_date
+
+def get_employee_name():
+    """Function to get employee name"""
+    return input("Enter employee's name (or 'End' to stop): ")
+
+def get_total_hours():
+    """Function to get total hours worked"""
+    return float(input("Enter total hours worked: "))
+
+def get_hourly_rate():
+    """Function to get hourly rate"""
+    return float(input("Enter hourly rate: "))
+
+def get_tax_rate():
+    """Function to get tax rate"""
+    return float(input("Enter tax rate (as a percentage): ").replace('%', '')) / 100
+
+def calculate_pay(total_hours, hourly_rate, tax_rate):
+    """Function to calculate gross pay, income tax, and net pay"""
+    gross_pay = total_hours * hourly_rate
+    income_tax = gross_pay * tax_rate
+    net_pay = gross_pay - income_tax
+    return gross_pay, income_tax, net_pay
+
+def display_employee_info(from_date, to_date, name, total_hours, hourly_rate, gross_pay, income_tax, net_pay):
+    """Function to display employee information"""
+    print("\nEmployee Information:")
+    print(f"From Date: {from_date}")
+    print(f"To Date: {to_date}")
+    print(f"Name: {name}")
+    print(f"Total Hours: {total_hours}")
+    print(f"Hourly Rate: ${hourly_rate:.2f}")
+    print(f"Gross Pay: ${gross_pay:.2f}")
+    print(f"Income Tax Rate: {income_tax / gross_pay * 100:.2f}%")
+    print(f"Income Tax: ${income_tax:.2f}")
+    print(f"Net Pay: ${net_pay:.2f}")
+
+def display_totals():
+    """Function to display total employee info from the summary dictionary"""
+    print("\nTotal Summary for All Employees:")
+    print(f"Total Employees: {total_summary['num_employees']}")
+    print(f"Total Hours Worked: {total_summary['total_hours']}")
+    print(f"Total Gross Pay: ${total_summary['total_gross_pay']:.2f}")
+    print(f"Total Income Tax: ${total_summary['total_tax']:.2f}")
+    print(f"Total Net Pay: ${total_summary['total_net_pay']:.2f}")
+
+# Main program logic
+while True:
+    # Get date range
+    from_date, to_date = get_date_range()
+
+    # Get employee name
+    name = get_employee_name()
+    if name.lower() == "end":  # Exit loop if user types 'End'
+        break
+
+    # Get other inputs
+    total_hours_worked = get_total_hours()
+    hourly_rate = get_hourly_rate()
+    tax_rate = get_tax_rate()
+
+    # Calculate pay details
+    gross_pay, income_tax, net_pay = calculate_pay(total_hours_worked, hourly_rate, tax_rate)
+
+    # Store employee data in a list
+    employees.append([from_date, to_date, name, total_hours_worked, hourly_rate, tax_rate, gross_pay, income_tax, net_pay])
+
+    # Increment totals in the summary dictionary
+    total_summary['num_employees'] += 1
+    total_summary['total_hours'] += total_hours_worked
+    total_summary['total_gross_pay'] += gross_pay
+    total_summary['total_tax'] += income_tax
+    total_summary['total_net_pay'] += net_pay
+
+    # Display employee info
+    display_employee_info(from_date, to_date, name, total_hours_worked, hourly_rate, gross_pay, income_tax, net_pay)
+
+# Display totals from the dictionary
+display_totals()
